@@ -81,9 +81,18 @@ def configure(axis, title, ylabel):
     axis.spines[["top", "right"]].set_visible(False)
 
 
+def save_figure(fig, name):
+    fig.savefig(PLOTS / f"{name}.png")
+    destination = PLOTS / f"{name}.svg"
+    fig.savefig(destination, metadata={"Date": None})
+    # Stable SVGs keep reruns reviewable and avoid generator trailing whitespace.
+    content = destination.read_text(encoding="utf-8")
+    destination.write_text("\n".join(line.rstrip() for line in content.splitlines()) + "\n", encoding="utf-8")
+
+
 def plot():
     PLOTS.mkdir(parents=True, exist_ok=True)
-    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "figure.dpi": 140})
+    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "figure.dpi": 140, "svg.hashsalt": "assignment-2"})
     panels = [("access", "Random access; m = 10,000"), ("search", "Search; m = 1,000"),
               ("insert_front", "Front insertion; m = 1,000"), ("remove_front", "Front removal; m = min(1,000, n)"),
               ("insert_middle", "Middle insertion; m = 1,000"), ("remove_middle", "Middle removal; m = min(1,000, n - floor(n/2))")]
@@ -107,8 +116,7 @@ def plot():
             configure(axis, title, "Mean total time (ms, log scale)" if kind == "time" else "Count per workload (log scale)")
             axis.legend(loc="best", fontsize=8)
         fig.supxlabel("Source: results/tables/summary.csv; seed 42; 5 measured repeats. " + ("Shading: min–max of repeats." if kind == "time" else "Visits and movements are different logical units, not CPU instructions."), fontsize=9)
-        fig.savefig(PLOTS / f"{kind}_vs_n.png")
-        fig.savefig(PLOTS / f"{kind}_vs_n.svg")
+        save_figure(fig, f"{kind}_vs_n")
         plt.close(fig)
     fig, axes = plt.subplots(1, 2, figsize=(12, 4.5), constrained_layout=True)
     for workload, label, color in (("heap_insert", "Insert n keys", "#1864ab"), ("heap_extract", "Extract n minima", "#c05621")):
@@ -121,8 +129,7 @@ def plot():
     for axis in axes:
         axis.legend()
     fig.supxlabel("Source: results/tables/summary.csv; seed 42; 5 measured repeats; m = n.", fontsize=9)
-    fig.savefig(PLOTS / "heap.png")
-    fig.savefig(PLOTS / "heap.svg")
+    save_figure(fig, "heap")
     plt.close(fig)
 
 
