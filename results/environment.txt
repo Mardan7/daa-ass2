@@ -1,0 +1,11 @@
+Run time (UTC): 2026-09-27T14:52:29.289759800Z
+Java: 25.0.2
+VM: OpenJDK 64-Bit Server VM
+OS: Windows 11 10.0
+Architecture: amd64
+Available logical processors: 12
+CPU: Intel64 Family 6 Model 154 Stepping 3, GenuineIntel
+Max JVM heap bytes: 1073741824
+JVM arguments: [-Xms256m, -Xmx1g]
+Seed: 42; measured repeats: 5; warmups: 3 at n=10000
+Counters are enabled inside timed methods; validation and setup are outside timing.
